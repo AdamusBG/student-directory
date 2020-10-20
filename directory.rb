@@ -9,7 +9,7 @@ def input_students
   # while the name is not empty, repeat this code
   while !name.empty? do
     #add the student hash to the array
-    students << {name: name, cohort: :november}
+    students << {name: name.capitalize, cohort: :november}
     puts "Now we have #{students.count} students"
     # get another name from the user
     name = gets.chomp
@@ -18,15 +18,32 @@ def input_students
   students
 end
 
+def print_specific_students
+  puts "Would you like to print all students or only those beginning with a specific letter?"
+  puts "Enter 'all' for all students or a letter for only students beginning with that letter"
+  letter = gets.chomp.upcase
+  letter
+end
+
 def print_header
   puts "The students of Villains Academy"
   puts "-------------"
 end
 
-def print(people)
-  people.each_with_index do |person, index|
-    puts "#{index + 1}. #{person[:name]} (#{person[:cohort]} cohort)"
-  end
+def print(people, letter)
+  if letter == "ALL"
+    people.each_with_index do |person, index|
+      puts "#{index + 1}. #{person[:name]} (#{person[:cohort]} cohort)"
+    end
+  else
+    person_number = 1
+    people.each do |person|
+      if person[:name][0] == letter
+        puts "#{person_number}. #{person[:name]} (#{person[:cohort]} cohort)"
+        person_number += 1
+      end
+    end
+  end 
 end
 
 def print_footer(names)
@@ -35,6 +52,7 @@ end
 
 # nothing happens until the methods are called
 students = input_students
+letter_to_print = print_specific_students
 print_header
-print(students)
+print(students, letter_to_print)
 print_footer(students)
