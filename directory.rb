@@ -32,13 +32,17 @@ end
 
 def print(people, letter)
   if letter == "ALL"
-    people.each_with_index do |person, index|
-      puts "#{index + 1}. #{person[:name]} (#{person[:cohort]} cohort)"
+    person_number = 1
+    people.each do |person|
+      if person[:name].length < 12
+        puts "#{person_number}. #{person[:name]} (#{person[:cohort]} cohort)"
+        person_number += 1
+      end
     end
   else
     person_number = 1
     people.each do |person|
-      if person[:name][0] == letter
+      if person[:name][0] == letter && person[:name].length < 12
         puts "#{person_number}. #{person[:name]} (#{person[:cohort]} cohort)"
         person_number += 1
       end
