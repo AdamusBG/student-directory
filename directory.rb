@@ -7,7 +7,15 @@ def input_students
   # get the first name
   name = gets.chomp
   # while the name is not empty, repeat this code
-  while !name.empty? do #hobby, country of birth, height
+  while !name.empty? do
+    # taking the cohort and handling
+    puts "Is this student in the february, may, august or november cohort?".center(200)
+    legal_cohorts = ["february", "may", "august", "november"]
+    cohort = gets.chomp
+    until legal_cohorts.include?(cohort)
+      puts "You entered an invalid cohort, please try again.".center(200)
+      cohort = gets.chomp
+    end
     # ask for hobby
     puts "Please enter this student's favourite hobby".center(200)
     hobby = gets.chomp
@@ -21,7 +29,7 @@ def input_students
     height = gets.chomp
     height = "not provided" if height.empty?
     # add the student hash to the array
-    students << {name: name.capitalize, cohort: :november, hobby: hobby.capitalize,
+    students << {name: name.capitalize, cohort: cohort.to_sym, hobby: hobby.capitalize,
                  country_of_birth: country_of_birth.capitalize, height: height.capitalize}
     puts "Now we have #{students.count} students".center(200)
     # get another name from the user
@@ -32,37 +40,29 @@ def input_students
   students
 end
 
-def print_specific_students
-  puts "Would you like to print all students or only those beginning with a specific letter?".center(200)
-  puts "Enter 'all' for all students or a letter for only students beginning with that letter".center(200)
-  letter = gets.chomp.upcase
-  letter = "ALL" if letter.empty?
-  letter
-end
-
 def print_header
   puts "The students of Villains Academy".center(200)
   puts "-------------".center(200)
 end
 
-def print(people, letter)
-  if letter == "ALL"
-    person_number = 1
-    people.each do |person|
-      if person[:name].length < 12
-        puts "#{person_number}. #{person[:name]} (#{person[:cohort]} cohort)".center(200)
-        puts "   #{person[:name]} was born in #{person[:country_of_birth]}, is #{person[:height]} cm tall and enjoys #{person[:hobby]}.".center(200)
+def print(people)
+  cohort_hash = {february: [], may: [], august: [], november: []}
+  people.each do |person|
+    cohort_hash[person[:cohort]].push(person)
+    # puts "#{person_number}. #{person[:name]} (#{person[:cohort]} cohort)".center(200)
+    # puts "   #{person[:name]} was born in #{person[:country_of_birth]}, is #{person[:height]} cm tall and enjoys #{person[:hobby]}.".center(200)
+    # person_number += 1
+  end
+  cohort_hash.each_pair do |cohort, people|
+    if !people.empty?
+      person_number = 1
+      puts "Students in #{cohort.to_s.capitalize} cohort:".center(200)
+      people.each do |person|
+        puts "#{person_number}. #{person[:name]}".center(200)
+        puts "#{person[:name]} was born in #{person[:country_of_birth]}, is #{person[:height]} cm tall and enjoys #{person[:hobby]}.".center(200)
         person_number += 1
       end
-    end
-  else
-    person_number = 1
-    people.each do |person|
-      if person[:name][0] == letter && person[:name].length < 12
-        puts "#{person_number}. #{person[:name]} (#{person[:cohort]} cohort)".center(200)
-        puts "   #{person[:name]} was born in #{person[:country_of_birth]}, is #{person[:height]} cm tall and enjoys #{person[:hobby]}.".center(200)
-        person_number += 1
-      end
+      puts ""
     end
   end
 end
@@ -73,7 +73,6 @@ end
 
 # nothing happens until the methods are called
 students = input_students
-letter_to_print = print_specific_students
 print_header
-print(students, letter_to_print)
+print(students)
 print_footer(students)
