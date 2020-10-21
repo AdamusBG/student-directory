@@ -18,37 +18,26 @@ def input_students
   students
 end
 
-def print_specific_students
-  puts "Would you like to print all students or only those beginning with a specific letter?"
-  puts "Enter 'all' for all students or a letter for only students beginning with that letter"
-  letter = gets.chomp.upcase
-  letter
-end
-
 def print_header
   puts "The students of Villains Academy"
   puts "-------------"
 end
 
-def print(people, letter)
-  if letter == "ALL"
-    person_number = 1
-    people.each do |person|
-      if person[:name].length < 12
-        puts "#{person_number}. #{person[:name]} (#{person[:cohort]} cohort)"
-        person_number += 1
-      end
+def print(people)
+  # create a copy of the array which we can mutate without affecting student number count in print_footer method
+  copy_of_people = people.map(&:clone)
+  person_number = 1
+  # use of the while loop, deleting the 0th index in the copied array each time 
+  while !copy_of_people.empty?
+    if copy_of_people[0][:name].length < 12 # only those people with names under 12 chars. get printed
+      puts "#{person_number}. #{copy_of_people[0][:name]} (#{copy_of_people[0][:cohort]} cohort)"
+      person_number += 1
+      copy_of_people.delete_at(0)
+    else # people with names over 12 chars. still need to be removed from the array to exit the loop
+      copy_of_people.delete_at(0)
     end
-  else
-    person_number = 1
-    people.each do |person|
-      if person[:name][0] == letter && person[:name].length < 12
-        puts "#{person_number}. #{person[:name]} (#{person[:cohort]} cohort)"
-        person_number += 1
-      end
-    end
-  end 
-end
+  end
+end # the use of the while loop to control the flow of this method is clunky and forced
 
 def print_footer(names)
   puts "Overall, we have #{names.count} great students"
@@ -56,7 +45,6 @@ end
 
 # nothing happens until the methods are called
 students = input_students
-letter_to_print = print_specific_students
 print_header
-print(students, letter_to_print)
+print(students)
 print_footer(students)
