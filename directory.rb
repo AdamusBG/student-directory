@@ -31,7 +31,8 @@ def input_students
     # add the student hash to the array
     students << {name: name.capitalize, cohort: cohort.to_sym, hobby: hobby.capitalize,
                  country_of_birth: country_of_birth.capitalize, height: height.capitalize}
-    puts "Now we have #{students.count} students".center(200)
+    puts "Now we have #{students.count} students".center(200) if students.count > 1
+    puts "Now we have #{students.count} student".center(200) if students.count == 1
     # get another name from the user
     puts "Please enter the name of the next student, or press return to cancel".center(200)
     name = gets.chomp
@@ -68,7 +69,8 @@ def print(people)
 end
 
 def print_footer(names)
-  puts "Overall, we have #{names.count} great students".center(200)
+  puts "Overall, we have #{names.count} great students".center(200) if names.count > 1
+  puts "Overall, we have #{names.count} great student".center(200) if names.count == 1
 end
 
 # nothing happens until the methods are called
