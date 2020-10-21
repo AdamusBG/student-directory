@@ -1,9 +1,9 @@
+@students = [] #empty
+
 # creating methods to print information
 def input_students
   puts "Please enter the names of the first student"
   puts "To finish, don't enter a name and press return"
-  # create an empty array
-  students = []
   # get the first name
   name = gets.strip
   # while the name is not empty, repeat this code
@@ -29,16 +29,14 @@ def input_students
     height = gets.strip
     height = "not provided" if height.empty?
     # add the student hash to the array
-    students << {name: name.capitalize, cohort: cohort.to_sym, hobby: hobby.capitalize,
+    @students << {name: name.capitalize, cohort: cohort.to_sym, hobby: hobby.capitalize,
                  country_of_birth: country_of_birth.capitalize, height: height.capitalize}
-    puts "Now we have #{students.count} students" if students.count > 1
-    puts "Now we have #{students.count} student" if students.count == 1
+    puts "Now we have #{@students.count} students" if @students.count > 1
+    puts "Now we have #{@students.count} student" if @students.count == 1
     # get another name from the user
     puts "Please enter the name of the next student, or press return to cancel"
     name = gets.strip
   end
-  # return array of students
-  students
 end
 
 def print_header
@@ -46,9 +44,9 @@ def print_header
   puts "-------------"
 end
 
-def print(people)
+def print_students_list
   cohort_hash = {february: [], may: [], august: [], november: []}
-  people.each do |person|
+  @students.each do |person|
     cohort_hash[person[:cohort]].push(person)
   end
   cohort_hash.each_pair do |cohort, people|
@@ -65,34 +63,41 @@ def print(people)
   end
 end
 
-def print_footer(names)
-  puts "Overall, we have #{names.count} great students" if names.count > 1
-  puts "Overall, we have #{names.count} great student" if names.count == 1
+def print_footer
+  puts "Overall, we have #{@students.count} great students" if @students.count > 1
+  puts "Overall, we have #{@students.count} great student" if @students.count == 1
 end
 
 def interactive_menu
-  students = []
   loop do
-    # 1. print the menu and ask the user what to do
-    puts "1. Input the students"
-    puts "2. Show the students"
-    puts "9. Exit" #we'll be adding more later
-    # 2. read and saveuser input
-    selection = gets.chomp
-    # 3. do what the user has asked
-    case selection
-    when "1"
-      students = input_students # if 1 is entered twice, the already entered students will be overwritten
-    when "2"
-      print_header
-      print(students)
-      print_footer(students)
-    when "9"
-      exit # terminates program
-    else
-      puts "Invalid selection, please try again"
-    end
+    print_menu
+    process(gets.chomp)
   end
+end
+
+def print_menu
+  puts "1. Input the students"
+  puts "2. Show the students"
+  puts "9. Exit" #we'll be adding more later
+end
+
+def process(selection)
+  case selection
+  when "1"
+    input_students # if 1 is entered twice, the already entered students will be overwritten
+  when "2"
+    show_students
+  when "9"
+    exit # terminates program
+  else
+    puts "Invalid selection, please try again"
+  end
+end
+
+def show_students
+  print_header
+  print_students_list
+  print_footer
 end
 
 # nothing happens until the methods are called
