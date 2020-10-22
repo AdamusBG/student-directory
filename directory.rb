@@ -110,8 +110,8 @@ end
 def print_menu
   puts "1. Input the students"
   puts "2. Show the students"
-  puts "3. Save the list to students.csv"
-  puts "4. Load the list from students.csv"
+  puts "3. Save the list to file"
+  puts "4. Load the list from file"
   puts "9. Exit" #we'll be adding more later
 end
 
@@ -122,9 +122,11 @@ def process(selection)
   when "2"
     show_students
   when "3"
-    save_students
+    puts "Please enter the filename to save to, including the file extension."
+    save_students(gets.chomp)
   when "4"
-    load_students
+    puts "Please enter the filename to load from, including the file extension."
+    load_students(gets.chomp)
   when "9"
     puts "Now exiting program."
     exit # terminates program
@@ -145,28 +147,37 @@ end
 
 # methods for reading and writing to file ------------------------------------------------------------------------------
 
-def save_students
+def save_students(filename)
   # open the file for writing
-  file = File.open("students.csv", "w")
+  file = File.open(filename_with_default(filename), "w")
   # iterate over the array of students
   @students.each do |student|
     student_data = [student[:name], student[:cohort], student[:country_of_birth], student[:height], student[:hobby]]
     csv_line = student_data.join(",")
     file.puts csv_line
   end
-  puts "Successfully saved students to #{File.basename(file)}."
+  puts "Successfully saved students to #{File.basename(file)}.\n "
   file.close
 end
 
-def load_students(filename = "students.csv")
-  file = File.open(filename, "r")
+def load_students(filename)
+  file = File.open(filename_with_default(filename), "r")
   file.readlines.each do |line|
     name, cohort, country_of_birth, height, hobby = line.chomp.split(",")
     add_students_to_array(name, cohort, hobby, country_of_birth, height)
   end
   @students.uniq! # this will simply remove any duplicates, e.g. if saving and loading multiple times in one session
-  puts "Successfully loaded students from #{File.basename(file)}."
+  puts "Successfully loaded students from #{File.basename(file)}.\n "
   file.close
+end
+
+def filename_with_default(filename)
+  if filename.empty?
+    processed_file_name = "students.csv"
+  else
+    processed_file_name = filename
+  end
+  processed_file_name
 end
 
 def try_load_students
