@@ -149,26 +149,26 @@ end
 
 def save_students(filename)
   # open the file for writing
-  file = File.open(filename_with_default(filename), "w")
-  # iterate over the array of students
-  @students.each do |student|
-    student_data = [student[:name], student[:cohort], student[:country_of_birth], student[:height], student[:hobby]]
-    csv_line = student_data.join(",")
-    file.puts csv_line
+  File.open(filename_with_default(filename), "w") do |file|
+    # iterate over the array of students
+    @students.each do |student|
+      student_data = [student[:name], student[:cohort], student[:country_of_birth], student[:height], student[:hobby]]
+      csv_line = student_data.join(",")
+      file.puts csv_line
+    end
+    puts "Successfully saved students to #{File.basename(file)}.\n "
   end
-  puts "Successfully saved students to #{File.basename(file)}.\n "
-  file.close
 end
 
 def load_students(filename)
-  file = File.open(filename_with_default(filename), "r")
-  file.readlines.each do |line|
-    name, cohort, country_of_birth, height, hobby = line.chomp.split(",")
-    add_students_to_array(name, cohort, hobby, country_of_birth, height)
+  File.open(filename_with_default(filename), "r") do |file|
+    file.readlines.each do |line|
+      name, cohort, country_of_birth, height, hobby = line.chomp.split(",")
+      add_students_to_array(name, cohort, hobby, country_of_birth, height)
+    end
+    @students.uniq! # this will simply remove any duplicates, e.g. if saving and loading multiple times in one session
+    puts "Successfully loaded students from #{File.basename(file)}.\n "
   end
-  @students.uniq! # this will simply remove any duplicates, e.g. if saving and loading multiple times in one session
-  puts "Successfully loaded students from #{File.basename(file)}.\n "
-  file.close
 end
 
 def filename_with_default(filename)
