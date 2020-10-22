@@ -63,14 +63,14 @@ end
 
 # prints correct "now we have x number of students message"
 def current_student_count_message
-  puts "Now we have #{@students.count} students" if @students.count > 1
-  puts "Now we have #{@students.count} student" if @students.count == 1
+  puts "Now we have #{@students.count} students\n" if @students.count > 1
+  puts "Now we have #{@students.count} student\n" if @students.count == 1
 end
 
 # methods for printing -----------------------------------------------------------------------------------------------
 
 def print_header
-  puts "The students of Villains Academy"
+  puts "\nThe students of Villains Academy"
   puts "-------------"
 end
 
@@ -118,7 +118,7 @@ end
 def process(selection)
   case selection
   when "1"
-    input_students # if 1 is entered twice, the already entered students will be overwritten
+    input_students
   when "2"
     show_students
   when "3"
@@ -126,6 +126,7 @@ def process(selection)
   when "4"
     load_students
   when "9"
+    puts "Now exiting program."
     exit # terminates program
   else
     puts "Invalid selection, please try again"
@@ -133,9 +134,13 @@ def process(selection)
 end
 
 def show_students
-  print_header
-  print_students_list
-  print_footer
+  if @students.empty?
+    puts "There are no students to display, please enter some first."
+  else
+    print_header
+    print_students_list
+    print_footer
+  end
 end
 
 # methods for reading and writing to file ------------------------------------------------------------------------------
@@ -149,6 +154,7 @@ def save_students
     csv_line = student_data.join(",")
     file.puts csv_line
   end
+  puts "Successfully saved students to #{File.basename(file)}."
   file.close
 end
 
@@ -158,6 +164,8 @@ def load_students(filename = "students.csv")
     name, cohort, country_of_birth, height, hobby = line.chomp.split(",")
     add_students_to_array(name, cohort, hobby, country_of_birth, height)
   end
+  @students.uniq! # this will simply remove any duplicates, e.g. if saving and loading multiple times in one session
+  puts "Successfully loaded students from #{File.basename(file)}."
   file.close
 end
 
@@ -166,10 +174,9 @@ def try_load_students
   filename = "students.csv" if filename.nil? # load students.csv by default
   if File.exists?(filename) # if it exists
     load_students(filename)
-     puts "Loaded #{@students.count} from #{filename}"
+    puts "Loaded #{@students.count} from #{filename}"
   else # if it doesn't exist
-    puts "Sorry, #{filename} doesn't exist."
-    exit # quit the program
+    puts "Sorry, #{filename} doesn't exist, try inputting some here." # removed the exit statement, no need to end the program here
   end
 end
 
