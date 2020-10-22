@@ -1,6 +1,6 @@
 @students = [] #empty
 
-# creating methods to print information
+# methods for inputting students
 def input_students
   puts "Please enter the names of the first student"
   puts "To finish, don't enter a name and press return"
@@ -44,6 +44,8 @@ def print_header
   puts "-------------"
 end
 
+# methods for printing
+
 def print_students_list
   cohort_hash = {february: [], may: [], august: [], november: []}
   @students.each do |person|
@@ -68,6 +70,8 @@ def print_footer
   puts "Overall, we have #{@students.count} great student" if @students.count == 1
 end
 
+# methods for controlling the menu
+
 def interactive_menu
   loop do
     print_menu
@@ -78,6 +82,7 @@ end
 def print_menu
   puts "1. Input the students"
   puts "2. Show the students"
+  puts "3. Save the list to students.csv"
   puts "9. Exit" #we'll be adding more later
 end
 
@@ -87,6 +92,8 @@ def process(selection)
     input_students # if 1 is entered twice, the already entered students will be overwritten
   when "2"
     show_students
+  when "3"
+    save_students
   when "9"
     exit # terminates program
   else
@@ -98,6 +105,20 @@ def show_students
   print_header
   print_students_list
   print_footer
+end
+
+# methods for reading and writing to file
+
+def save_students
+  # open the file for writing
+  file = File.open("students.csv", "w")
+  # iterate over the array of students
+  @students.each do |student|
+    student_data = [student[:name], student[:cohort], student[:country_of_birth], student[:height], student[:hobby]]
+    csv_line = student_data.join(",")
+    file.puts csv_line
+  end
+  file.close
 end
 
 # nothing happens until the methods are called
