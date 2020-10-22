@@ -1,4 +1,6 @@
+require 'csv'
 @students = [] #empty
+
 
 # methods for inputting students
 def input_students
@@ -77,7 +79,7 @@ end
 def print_students_list
   cohort_hash = {february: [], may: [], august: [], november: []}
   @students.each do |person|
-    cohort_hash[person[:cohort]].push(person)
+    cohort_hash[person[:cohort]].push(person) if person[:cohort] != nil
   end
   cohort_hash.each_pair do |cohort, people|
     if !people.empty?
@@ -94,8 +96,8 @@ def print_students_list
 end
 
 def print_footer
-  puts "Overall, we have #{@students.count} great students" if @students.count > 1
-  puts "Overall, we have #{@students.count} great student" if @students.count == 1
+  puts "Overall, we have #{@students.count} great students\n" if @students.count > 1
+  puts "Overall, we have #{@students.count} great student\n" if @students.count == 1
 end
 
 # methods for controlling the menu ------------------------------------------------------------------------------------
@@ -149,26 +151,22 @@ end
 
 def save_students(filename)
   # open the file for writing
-  File.open(filename_with_default(filename), "w") do |file|
+  CSV.open(filename_with_default(filename), "wb") do |file|
     # iterate over the array of students
     @students.each do |student|
-      student_data = [student[:name], student[:cohort], student[:country_of_birth], student[:height], student[:hobby]]
-      csv_line = student_data.join(",")
-      file.puts csv_line
+      file << [student[:name], student[:cohort].to_s, student[:country_of_birth], student[:height], student[:hobby]]
     end
-    puts "Successfully saved students to #{File.basename(file)}.\n "
+    puts "Successfully saved students to #{filename_with_default(filename)}.\n "
   end
 end
 
 def load_students(filename)
-  File.open(filename_with_default(filename), "r") do |file|
-    file.readlines.each do |line|
-      name, cohort, country_of_birth, height, hobby = line.chomp.split(",")
-      add_students_to_array(name, cohort, hobby, country_of_birth, height)
-    end
-    @students.uniq! # this will simply remove any duplicates, e.g. if saving and loading multiple times in one session
-    puts "Successfully loaded students from #{File.basename(file)}.\n "
+  CSV.foreach(filename_with_default(filename)) do |row|
+    name, cohort, country_of_birth, height, hobby = row[0..4]
+    add_students_to_array(name, cohort, hobby, country_of_birth, height)
   end
+  @students.uniq! # this will simply remove any duplicates, e.g. if saving and loading multiple times in one session
+  puts "Successfully loaded students from #{filename_with_default(filename)}.\n "
 end
 
 def filename_with_default(filename)
