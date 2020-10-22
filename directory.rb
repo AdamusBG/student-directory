@@ -29,8 +29,7 @@ def input_students
     height = STDIN.gets.strip
     height = "not provided" if height.empty?
     # add the student hash to the array
-    @students << {name: name.capitalize, cohort: cohort.to_sym, hobby: hobby.capitalize,
-                 country_of_birth: country_of_birth.capitalize, height: height.capitalize}
+    add_students_to_array(name, cohort, hobby, country_of_birth, height)
     puts "Now we have #{@students.count} students" if @students.count > 1
     puts "Now we have #{@students.count} student" if @students.count == 1
     # get another name from the user
@@ -128,8 +127,7 @@ def load_students(filename = "students.csv")
   file = File.open(filename, "r")
   file.readlines.each do |line|
     name, cohort, country_of_birth, height, hobby = line.chomp.split(",")
-    @students << {name: name, cohort: cohort.to_sym, hobby: hobby,
-                  country_of_birth: country_of_birth, height: height}
+    add_students_to_array(name, cohort, hobby, country_of_birth, height)
   end
   file.close
 end
@@ -144,6 +142,13 @@ def try_load_students
     puts "Sorry, #{filename} doesn't exist."
     exit # quit the program
   end
+end
+
+# refactoring methods
+
+def add_students_to_array(name, cohort, hobby, country_of_birth, height)
+  @students << {name: name.capitalize, cohort: cohort.to_sym, hobby: hobby.capitalize,
+                country_of_birth: country_of_birth.capitalize, height: height.capitalize}
 end
 
 # nothing happens until the methods are called
