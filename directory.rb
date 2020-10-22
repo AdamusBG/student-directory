@@ -8,42 +8,71 @@ def input_students
   name = STDIN.gets.strip
   # while the name is not empty, repeat this code
   while !name.empty? do
-    # taking the cohort and handling
-    puts "Is this student in the february, may, august or november cohort?"
-    legal_cohorts = ["february", "may", "august", "november"]
-    cohort = STDIN.gets.strip
-    until legal_cohorts.include?(cohort)
-      puts "You entered an invalid cohort, please try again."
-      cohort = STDIN.gets.strip
-    end
-    # ask for hobby
-    puts "Please enter this student's favourite hobby"
-    hobby = STDIN.gets.strip
-    hobby = "not provided" if hobby.empty?
-    # ask for country of birth
-    puts "Please enter this student's country of birth"
-    country_of_birth = STDIN.gets.strip
-    country_of_birth = "not provided" if country_of_birth.empty?
-    # ask for height
-    puts "Please enter this student's height in cm"
-    height = STDIN.gets.strip
-    height = "not provided" if height.empty?
+    # call method for cohort
+    cohort = input_student_cohort
+    # call method for hobby
+    hobby = input_student_hobby
+    # call method for country of birth
+    country_of_birth = input_student_country
+    # call method for for height
+    height = input_student_height
     # add the student hash to the array
     add_students_to_array(name, cohort, hobby, country_of_birth, height)
-    puts "Now we have #{@students.count} students" if @students.count > 1
-    puts "Now we have #{@students.count} student" if @students.count == 1
+    current_student_count_message
     # get another name from the user
     puts "Please enter the name of the next student, or press return to cancel"
     name = STDIN.gets.strip
   end
 end
 
+# gets the student's cohort, from list of legal cohorts
+def input_student_cohort
+  puts "Is this student in the february, may, august or november cohort?"
+  legal_cohorts = ["february", "may", "august", "november"]
+  cohort = STDIN.gets.strip
+  until legal_cohorts.include?(cohort)
+    puts "You entered an invalid cohort, please try again."
+    cohort = STDIN.gets.strip
+  end
+  cohort
+end
+
+# gets student's hobby
+def input_student_hobby
+  puts "Please enter this student's favourite hobby"
+  hobby = STDIN.gets.strip
+  hobby = "not provided" if hobby.empty?
+  hobby
+end
+
+# gets student's country of birth
+def input_student_country
+  puts "Please enter this student's country of birth"
+  country_of_birth = STDIN.gets.strip
+  country_of_birth = "not provided" if country_of_birth.empty?
+  country_of_birth
+end
+
+# gets student's height
+def input_student_height
+  puts "Please enter this student's height in cm"
+  height = STDIN.gets.strip
+  height = "not provided" if height.empty?
+  height
+end
+
+# prints correct "now we have x number of students message"
+def current_student_count_message
+  puts "Now we have #{@students.count} students" if @students.count > 1
+  puts "Now we have #{@students.count} student" if @students.count == 1
+end
+
+# methods for printing -----------------------------------------------------------------------------------------------
+
 def print_header
   puts "The students of Villains Academy"
   puts "-------------"
 end
-
-# methods for printing
 
 def print_students_list
   cohort_hash = {february: [], may: [], august: [], november: []}
@@ -69,7 +98,7 @@ def print_footer
   puts "Overall, we have #{@students.count} great student" if @students.count == 1
 end
 
-# methods for controlling the menu
+# methods for controlling the menu ------------------------------------------------------------------------------------
 
 def interactive_menu
   loop do
@@ -109,7 +138,7 @@ def show_students
   print_footer
 end
 
-# methods for reading and writing to file
+# methods for reading and writing to file ------------------------------------------------------------------------------
 
 def save_students
   # open the file for writing
@@ -144,12 +173,14 @@ def try_load_students
   end
 end
 
-# refactoring methods
+# method to add students to array called by input_students and load_students -------------------------------------------
 
 def add_students_to_array(name, cohort, hobby, country_of_birth, height)
   @students << {name: name.capitalize, cohort: cohort.to_sym, hobby: hobby.capitalize,
                 country_of_birth: country_of_birth.capitalize, height: height.capitalize}
 end
+
+
 
 # nothing happens until the methods are called
 try_load_students
